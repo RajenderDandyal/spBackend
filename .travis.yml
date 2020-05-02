@@ -1,0 +1,23 @@
+language: generic
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t rajender/node-docker -f Dockerfile.dev .
+
+script:
+  - docker run -e CI=true rajender/node-docker npm run test -- --coverage
+deploy:
+  provider: elasticbeanstalk
+  region: "ap-south-1"
+  app: "node-docker"
+  env: "nodeDocker-env"
+  bucket_name: "elasticbeanstalk-ap-south-1-856282354983"
+  bucket_path: "node-docker"
+  on:
+    branch: master
+  access_key_id: 
+    secure: $AWS_ACCESS_KEY
+  secret_access_key:$AWS_SECRET_KEY
+    secure: $AWS_SECRET_KEY
